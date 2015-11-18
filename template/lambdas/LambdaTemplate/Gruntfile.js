@@ -9,7 +9,7 @@ module.exports = function(grunt) {
     browserify: {
       dev: {
         files: {
-          'build/index.js': ['./lambda_function.js'],
+          'lambda_function/index.js': ['./lambda_function.js'],
         },
         options: {
           watch: true,
@@ -23,7 +23,7 @@ module.exports = function(grunt) {
 
       dist: {
         files: {
-          'build/index.js': ['./lambda_function.js'],
+          'lambda_function/index.js': ['./lambda_function.js'],
         },
         options: {
           watch: false,

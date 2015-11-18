@@ -36,7 +36,7 @@ LAMBDA_CONFIG = json.load(
     open(os.path.join(LAMBDA_DIR, "config.json")),
     "utf-8")
 
-ZIP_PATH = os.path.join("..", "{}.zip".format(LAMBDA_NAME))
+ZIP_PATH = os.path.join("..", "..", "{}.zip".format(LAMBDA_NAME))
 ZIP_FILE = os.path.join(LAMBDA_DIR, ZIP_PATH)
 
 STACK_NAME = ''.join([DEPLOYMENT_NAME, '-', 'l', LAMBDA_NAME])
@@ -46,7 +46,7 @@ STACK_NAME = ''.join([DEPLOYMENT_NAME, '-', 'l', LAMBDA_NAME])
 
 call(["rm", ZIP_FILE])
 call("chmod -Rv a=rX,u+w *", cwd=LAMBDA_DIR, shell=True)
-call(["zip", ZIP_PATH, "-r", ".", "-i", "*"], cwd=LAMBDA_DIR)
+call(["zip", ZIP_PATH, "-r", ".", "-i", "*"], cwd=os.path.join(LAMBDA_DIR, 'build'))
 
 
 """ Upload the zipfile to s3 """
