@@ -19,7 +19,7 @@ slush baws
 ```bash
 cd myProject
 
-source .aliases
+source baws.aliases
 b --help
 ```
 
