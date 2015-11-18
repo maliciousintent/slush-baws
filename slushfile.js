@@ -48,6 +48,7 @@ gulp.task('default', function (done) {
     if (answers.type === 'app') {
       pipe = pipe.src([
         __dirname + '/template/app/**',
+        __dirname + '/template/app/.gitignore',
       ])
       .pipe(template(answers, { interpolate: /{{([\s\S]+?)}}/g }))
       .pipe(conflict('./'))
