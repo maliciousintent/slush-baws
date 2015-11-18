@@ -10,7 +10,7 @@ npm -g i slush-baws
 
 mkdir myProject
 cd myProject
-baws slush
+slush baws
 ```
 
 
