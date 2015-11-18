@@ -1,4 +1,14 @@
 {
+  "_replacePaths": [
+    ["_comment", ""],
+    ["_comment", "Replacement rules will be executed after merging this template with user-overrides."],
+    ["_comment", "Read the docs before using this feature :)"],
+    ["_comment", ""],
+    ["_comment", "$.Resources.TestBucketWithCustomName.Properties.BucketName['Fn::Join'][1][0]",
+                 "'lambda-resources'[?LogicalResourceId == 'RoleForLambdaStampaPippoPolicies'].ResourceStatus | [0]"],
+    ["_comment", "$.Resources.TestBucketWithCustomName.Properties.BucketName['Fn::Join'][1][1]",
+                 "env.DEPLOYMENT_NAME"]
+  ],
   "AWSTemplateFormatVersion": "2010-09-09",
   "Resources": {}
 }
