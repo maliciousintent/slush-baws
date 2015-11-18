@@ -28,3 +28,8 @@ b --help
 
 * use *lowercase* for app names
 * use PascalCase for resource names
+
+
+## License
+
+MIT

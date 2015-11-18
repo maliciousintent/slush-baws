@@ -1,7 +1,7 @@
 {
   "name": "slush-baws",
   "version": "1.0.0",
-  "description": "Generator for Server-less apps on AWS (Api Gateway + Lambda + Cloudformation)",
+  "description": "Slush generator for server-less apps on AWS (Api Gateway + Lambda + Cloudformation)",
   "main": "slushfile.js",
   "dependencies": {
     "gulp": "^3.9.0",
