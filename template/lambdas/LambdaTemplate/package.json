@@ -2,6 +2,9 @@
   "name": "{{name}}",
   "version": "1.0.0",
   "description": "",
+  "scripts": {
+    "dist": "grunt dist"
+  },
   "dependencies": {
     "aws-sdk": "^2.2.17",
     "babelify": "^7.2.0",

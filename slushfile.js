@@ -50,24 +50,25 @@ gulp.task('default', function (done) {
         __dirname + '/template/app/**',
       ])
       .pipe(template(answers, { interpolate: /{{([\s\S]+?)}}/g }))
-      // .pipe(conflict('./'))
+      .pipe(conflict('./'))
       .pipe(gulp.dest('./')) // relative to cwd
 
     } else if (answers.type === 'lambda') {
       pipe = pipe.src([
         __dirname + '/template/lambdas/LambdaTemplate/**',
       ])
-      // .pipe(template(answers, { interpolate: /{{([\s\S]+?)}}/g }))
-      // .pipe(conflict('./lambdas/' + RESOURCE_NAME))
+      .pipe(template(answers, { interpolate: /{{([\s\S]+?)}}/g }))
+      .pipe(conflict('./lambdas/' + RESOURCE_NAME))
       .pipe(gulp.dest('./lambdas/' + RESOURCE_NAME)) // relative to cwd
+      .pipe(install())
 
     } else if (answers.type === 'endpoint') {
       pipe = pipe.src([
         __dirname + '/template/endpoints/EndpointTemplate/**',
       ])
-      // .pipe(template(answers, { interpolate: /{{([\s\S]+?)}}/g }))
-      // .pipe(conflict('./endpints/' + RESOURCE_NAME))
-      .pipe(gulp.dest('./endpints/' + RESOURCE_NAME)) // relative to cwd
+      .pipe(template(answers, { interpolate: /{{([\s\S]+?)}}/g }))
+      .pipe(conflict('./endpoints/' + RESOURCE_NAME))
+      .pipe(gulp.dest('./endpoints/' + RESOURCE_NAME)) // relative to cwd
 
     } else {
       throw new Error('Configuration error: unkown resource type `' + answers.type + '`');

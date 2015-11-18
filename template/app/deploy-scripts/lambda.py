@@ -36,7 +36,7 @@ LAMBDA_CONFIG = json.load(
     open(os.path.join(LAMBDA_DIR, "config.json")),
     "utf-8")
 
-ZIP_PATH = os.path.join("..", "..", "{}.zip".format(LAMBDA_NAME))
+ZIP_PATH = os.path.join("..", "{}.zip".format(LAMBDA_NAME))
 ZIP_FILE = os.path.join(LAMBDA_DIR, ZIP_PATH)
 
 STACK_NAME = ''.join([DEPLOYMENT_NAME, '-', 'l', LAMBDA_NAME])
@@ -44,9 +44,12 @@ STACK_NAME = ''.join([DEPLOYMENT_NAME, '-', 'l', LAMBDA_NAME])
 
 """ Zip the lambda """
 
+LAMBDA_DIR_BUILD = os.path.join(LAMBDA_DIR, 'build')
+
 call(["rm", ZIP_FILE])
-call("chmod -Rv a=rX,u+w *", cwd=LAMBDA_DIR, shell=True)
-call(["zip", ZIP_PATH, "-r", ".", "-i", "*"], cwd=os.path.join(LAMBDA_DIR, 'build'))
+call("npm run dist", cwd=LAMBDA_DIR, shell=True)
+call("chmod -Rv a=rX,u+w lambda_function.js", cwd=LAMBDA_DIR_BUILD, shell=True)
+call(["zip", os.path.join("..", ZIP_PATH), "-r", ".", "-i", "*"], cwd=LAMBDA_DIR_BUILD)
 
 
 """ Upload the zipfile to s3 """
@@ -169,6 +172,6 @@ def json_serial(obj):
     raise TypeError("Type not serializable")
 
 
-RESOURCES_FILE_NAME = os.path.join('.', 'resources', 'default-deployment', 'lambda-resources.json')
+RESOURCES_FILE_NAME = os.path.join('.', 'resources', DEPLOYMENT_NAME, 'lambda-resources.json')
 json.dump(resources, open(RESOURCES_FILE_NAME, 'w'), default=json_serial, indent=2, sort_keys=True)
 print "Wrote resource descriptors to", RESOURCES_FILE_NAME

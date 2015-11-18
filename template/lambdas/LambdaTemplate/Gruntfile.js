@@ -9,11 +9,14 @@ module.exports = function(grunt) {
     browserify: {
       dev: {
         files: {
-          'lambda_function/index.js': ['./lambda_function.js'],
+          'build/lambda_function.js': ['./lambda_function.js'],
         },
         options: {
           watch: true,
-          keepAlive:true,
+          keepAlive: true,
+          browserifyOptions: {
+            standalone: 'module',
+          },
           transform: [
             'babelify',
             'jadeify'
@@ -23,10 +26,14 @@ module.exports = function(grunt) {
 
       dist: {
         files: {
-          'lambda_function/index.js': ['./lambda_function.js'],
+          'build/lambda_function.js': ['./lambda_function.js'],
         },
         options: {
           watch: false,
+          keepAlive: false,
+          browserifyOptions: {
+            standalone: 'module',
+          },
           transform: [
             'babelify',
             'jadeify'

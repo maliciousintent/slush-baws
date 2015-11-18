@@ -15,7 +15,7 @@
     "___comment4": "(see: https://github.com/boto/boto3/issues/340)",
     "type": "Lambda",
     "httpMethod": "GET",
-    "uri": "{{name}}",
+    "uri": "Fn{{name}}",
     "requestParameters": {},
     "___comment5": "For MOCK integrations you must set requestTemplates={\"statusCode\": 200}",
     "requestTemplates": {
@@ -25,9 +25,12 @@
       "default": {
         "statusCode": "200",
         "selectionPattern": ".*",
-        "responseParameters": {},
+        "responseParameters": {
+          "method.response.header.Content-Type": "'text/html'",
+          "method.response.header.Cache-Control": "'private, max-age=0, no-cache'"
+        },
         "responseTemplates": {
-          "application/json": ""
+          "text/html": "$input.path('$').html"
         }
       },
       "400": {
@@ -43,12 +46,17 @@
   "methodResponses": {
     "200": {
       "statusCode": "200",
+      "responseParameters": {
+        "method.response.header.Content-Type": true,
+        "method.response.header.Cache-Control": true
+      },
       "responseModels": {
         "application/json": "Empty"
       }
     },
       "400": {
         "statusCode": "400",
+        "responseParameters": {},
         "responseModels": {
           "application/json": "Empty"
         }

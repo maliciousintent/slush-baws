@@ -13,6 +13,16 @@ cf = boto3.client('cloudformation')
 apig = boto3.client('apigateway')
 
 
+""" Configuration from baws.env """
+SUPPORT_BUCKET_NAME = os.getenv("SUPPORT_BUCKET_NAME")
+APP_NAME = os.getenv("APP_NAME")
+DEPLOYMENT_NAME = os.getenv("DEPLOYMENT_NAME")
+
+
+if not os.getenv("BAWS_SOURCED"):
+    raise Exception("Please source baws.env before running this script.")
+
+
 if not len(sys.argv) == 2 or not sys.argv[1]:
     raise Exception("First parameter should be a ENDPOINT name")
 
@@ -45,7 +55,7 @@ ENDPOINT_CONFIG = json.load(
     "utf-8")
 
 RESTAPI_CONFIG = json.load(  # name, id
-    open(os.path.join(".", "resources", "default-deployment", "api.json")),
+    open(os.path.join(".", "resources", DEPLOYMENT_NAME, "api.json")),
     "utf-8")
 
 resources = apig.get_resources(restApiId=RESTAPI_CONFIG['id'], limit=500)['items']
@@ -118,6 +128,7 @@ for methodResponseKey, methodResponseConfig in ENDPOINT_CONFIG['methodResponses'
         resourceId=resource_id,
         httpMethod=ENDPOINT_CONFIG['method'],
         statusCode=methodResponseConfig['statusCode'],
+        responseParameters=methodResponseConfig['responseParameters'],
         responseModels=methodResponseConfig['responseModels'],
     )
     print "--> put method response", methodResponseConfig['statusCode']
@@ -127,7 +138,7 @@ for methodResponseKey, methodResponseConfig in ENDPOINT_CONFIG['methodResponses'
 requestTemplates = mapTemplateValues(ENDPOINT_CONFIG['methodIntegration']['requestTemplates'])
 
 if ENDPOINT_CONFIG['methodIntegration']['type'] == "Lambda":
-    RESOURCES_FILE_NAME = os.path.join('.', 'resources', 'default-deployment', 'lambda-resources.json')
+    RESOURCES_FILE_NAME = os.path.join('.', 'resources', DEPLOYMENT_NAME, 'lambda-resources.json')
     LAMBDAS_DESCRIPTORS = json.load(open(RESOURCES_FILE_NAME))
 
     try:

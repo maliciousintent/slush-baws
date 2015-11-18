@@ -5,5 +5,5 @@
 var AWS = require('aws-sdk');
 
 module.exports.lambda_handler = function (event, context) {
-  context.done(null, 'It works, hello world from {{name}}!');
+  context.done(null, { html: '<h1>It works, hello world from {{name}}!</h1>' });
 }
