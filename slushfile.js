@@ -12,7 +12,7 @@ gulp.task('default', function (done) {
     { type: 'list', name: 'type',
                     message: 'What to scaffold?',
                     choices: ['app', new inquirer.Separator('----'), 'lambda', 'endpoint', 'model'],
-                    default: gulp.args[0],
+                    default: gulp.args[0] || 2,
     },
     { type: 'text', name: 'name',
                     message: 'Resource name (a-zA-Z0-9) =>',
