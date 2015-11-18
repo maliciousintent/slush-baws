@@ -57,6 +57,7 @@ gulp.task('default', function (done) {
     } else if (answers.type === 'lambda') {
       pipe = pipe.src([
         __dirname + '/template/lambdas/LambdaTemplate/**',
+        __dirname + '/template/lambdas/LambdaTemplate/.babelrc',
       ])
       .pipe(template(answers, { interpolate: /{{([\s\S]+?)}}/g }))
       .pipe(conflict('./lambdas/' + RESOURCE_NAME))
