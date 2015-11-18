@@ -55,6 +55,13 @@ deploy_user () {
 
 switch_stage () {
   sed -i "s/export DEPLOYMENT_NAME=.*/export DEPLOYMENT_NAME=$1/g" ./baws.env
+
+  if [ -d ./resources/$DEPLOYMENT_NAME ]; then
+    echo "Stage is new. Creating directories..."
+    mkdir -p ./resources/$DEPLOYMENT_NAME
+    echo '{}' >> ./resources/$DEPLOYMENT_NAME/user-overrides.json
+    echo "Done. You should run 'b setup' now!"
+  fi
 }
 
 setup () {
@@ -107,7 +114,7 @@ case $TYPE in
 
   use)
   switch_stage $OBJECT_NAME
-  echo "Switched to deployment stage $OBJECT_NAME. If this is new, you should run '$0 setup' now."
+  echo "Switched to deployment stage $OBJECT_NAME."
   ;;
 
   setup)
