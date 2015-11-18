@@ -53,6 +53,7 @@ gulp.task('default', function (done) {
       .pipe(template(answers, { interpolate: /{{([\s\S]+?)}}/g }))
       .pipe(conflict('./'))
       .pipe(gulp.dest('./')) // relative to cwd
+      .pipe(install())
 
     } else if (answers.type === 'lambda') {
       pipe = pipe.src([

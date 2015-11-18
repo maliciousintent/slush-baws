@@ -9,5 +9,10 @@
     "url": ""
   },
   "author": "",
-  "license": ""
+  "license": "",
+  "dependencies": {
+    "jmespath": "^0.14.0",
+    "jsonpath": "^0.2.0",
+    "lodash": "^3.10.1"
+  }
 }
