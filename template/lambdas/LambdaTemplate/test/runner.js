@@ -23,7 +23,7 @@ var context = {
   // @TODO: env ...
 };
 
-var event = JSON.parse(fs.readFileSync(__dirname + '/../event.json'));
+var event = JSON.parse(fs.readFileSync(__dirname + '/event.json'));
 
 var module = require('../build/lambda_function.js');
 module.lambda_handler(event, context);
