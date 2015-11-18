@@ -1,0 +1,19 @@
+{
+  "name": "{{name}}",
+  "version": "1.0.0",
+  "description": "",
+  "dependencies": {
+    "aws-sdk": "^2.2.17",
+    "babelify": "^7.2.0",
+    "browserify": "^11.2.0",
+    "grunt": "^0.4.5",
+    "grunt-browserify": "^4.0.1",
+    "jade": "^1.11.0",
+    "jade-loader": "^0.7.1",
+    "jadeify": "^4.5.0",
+    "watchify": "^3.6.1"
+  },
+  "devDependencies": {
+    "babelify": "^6.4.0"
+  }
+}

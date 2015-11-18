@@ -1,0 +1,11 @@
+{
+  "runtime": "nodejs",
+  "roleStatements": [{
+     "Effect": "Allow",
+     "Action": "*",
+     "Resource": "*"
+  }],
+  "handler": "lambda_function.lambda_handler",
+  "memorySize": 256,
+  "timeout": 5
+}

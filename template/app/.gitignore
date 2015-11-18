@@ -1,0 +1,6 @@
+*.pyc
+*.zip
+~user-resources.json
+.user-resources.json
+node_modules
+lambdas/**/build/**

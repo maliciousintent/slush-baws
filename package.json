@@ -1,0 +1,31 @@
+{
+  "name": "slush-baws",
+  "version": "1.0.0",
+  "description": "Generator for Server-less apps on AWS (Api Gateway + Lambda + Cloudformation)",
+  "main": "slushfile.js",
+  "dependencies": {
+    "gulp": "^3.9.0",
+    "gulp-conflict": "^0.4.0",
+    "gulp-install": "^0.6.0",
+    "gulp-template": "^3.1.0",
+    "inquirer": "^0.11.0",
+    "lodash": "^3.10.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/plasticpanda/slush-baws.git"
+  },
+  "keywords": [
+    "slushgenerator"
+  ],
+  "author": "Simone Lusenti <simone@plasticpanda.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/plasticpanda/slush-baws/issues"
+  },
+  "homepage": "https://github.com/plasticpanda/slush-baws#readme"
+}

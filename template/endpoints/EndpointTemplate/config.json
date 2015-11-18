@@ -1,0 +1,57 @@
+{
+  "___comment1": "property names are inspired by boto3",
+  "___comment1": "http://boto3.readthedocs.org/en/latest/reference/services/apigateway.html",
+  "path": "{{rest_path}}",
+  "method": "{{rest_method}}",
+  "requestParameters": {},
+  "___comment1": "Anywhere a template is referenced you can specify a VTL filename, ",
+  "___comment2": "using a string like <./<filename>.vtl",
+  "___comment3": "The deploy script will read the file and use its contents.",
+  "requestModels": {},
+  "methodIntegration": {
+    "___comment1": "You can also use type=Lambda here and specify a ",
+    "___comment2": "CF Logical ID as the uri, prefixed by Fn. The deploy script will replace the ",
+    "___comment3": "Logical ID with the correct ARN and build the URI as required",
+    "___comment4": "(see: https://github.com/boto/boto3/issues/340)",
+    "type": "Lambda",
+    "httpMethod": "GET",
+    "uri": "{{name}}",
+    "requestParameters": {},
+    "___comment5": "For MOCK integrations you must set requestTemplates={\"statusCode\": 200}",
+    "requestTemplates": {
+      "application/json": "{\"statusCode\": 200}"
+    },
+    "integrationResponses": {
+      "default": {
+        "statusCode": "200",
+        "selectionPattern": ".*",
+        "responseParameters": {},
+        "responseTemplates": {
+          "application/json": ""
+        }
+      },
+      "400": {
+        "statusCode": "400",
+        "selectionPattern": "4\\d\\d",
+        "responseParameters": {},
+        "responseTemplates": {
+          "application/json": "Bad Request"
+        }
+      }
+    }
+  },
+  "methodResponses": {
+    "200": {
+      "statusCode": "200",
+      "responseModels": {
+        "application/json": "Empty"
+      }
+    },
+      "400": {
+        "statusCode": "400",
+        "responseModels": {
+          "application/json": "Empty"
+        }
+      }
+  }
+}
