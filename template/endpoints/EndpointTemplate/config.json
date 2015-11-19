@@ -1,4 +1,5 @@
 {
+  <% if (enableCors === 'yes') { %>"_bawsEnableCors": true,<% } else { %>"_bawsEnableCors": false,<% }%>
   "___comment1": "property names are inspired by boto3",
   "___comment1": "http://boto3.readthedocs.org/en/latest/reference/services/apigateway.html",
   "path": "{{rest_path}}",
@@ -28,6 +29,11 @@
         "responseParameters": {
           <% if (contentType === 'html') { %>"method.response.header.Content-Type": "'text/html'",
           "method.response.header.Cache-Control": "'private, max-age=0, no-cache'"<% } %>
+          <% if (contentType === 'html' && enableCors === 'yes') { %>,<% } %>
+          <% if (enableCors === 'yes') { %>
+          "method.response.header.Access-Control-Allow-Origin": "'*'",
+          "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+          "method.response.header.Access-Control-Allow-Methods": "'{{rest_method}}'"<% } %>
         },
         "responseTemplates": {
           <% if (contentType === 'html') { %>"text/html": "$input.path('$').html"
@@ -50,6 +56,10 @@
       "responseParameters": {
         <% if (contentType === 'html') { %>"method.response.header.Content-Type": true,
         "method.response.header.Cache-Control": true<% } %>
+        <% if (contentType === 'html' && enableCors === 'yes') { %>,<% } %>
+        <% if (enableCors === 'yes') { %>"method.response.header.Access-Control-Allow-Origin": true,
+        "method.response.header.Access-Control-Allow-Headers": true,
+        "method.response.header.Access-Control-Allow-Methods": true<% } %>
       },
       "responseModels": {
         "application/json": "Empty"

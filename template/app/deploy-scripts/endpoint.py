@@ -5,6 +5,7 @@ import os
 import time
 import datetime
 import json
+from copy import deepcopy
 from subprocess import call
 
 import boto3
@@ -99,94 +100,108 @@ for part in PATH_TOKENS:
 resource_id = last_root['id']
 
 
-try:
-    print "--> deleting method", ENDPOINT_CONFIG['method']
-    apig.delete_method(
-        restApiId=RESTAPI_CONFIG['id'],
-        resourceId=resource_id,
-        httpMethod=ENDPOINT_CONFIG['method']
-    )
-
-except Exception, e:
-    print "----> method did not exist"
-
-
-apig.put_method(
-    restApiId=RESTAPI_CONFIG['id'],
-    resourceId=resource_id,
-    httpMethod=ENDPOINT_CONFIG['method'],
-    authorizationType='NONE',
-    apiKeyRequired=False,
-    requestParameters=ENDPOINT_CONFIG['requestParameters'],
-    requestModels=ENDPOINT_CONFIG['requestModels']
-)
-print "--> put method", ENDPOINT_CONFIG['method']
-
-for methodResponseKey, methodResponseConfig in ENDPOINT_CONFIG['methodResponses'].iteritems():
-    apig.put_method_response(
-        restApiId=RESTAPI_CONFIG['id'],
-        resourceId=resource_id,
-        httpMethod=ENDPOINT_CONFIG['method'],
-        statusCode=methodResponseConfig['statusCode'],
-        responseParameters=methodResponseConfig['responseParameters'],
-        responseModels=methodResponseConfig['responseModels'],
-    )
-    print "--> put method response", methodResponseConfig['statusCode']
-
-
-# prepare put_integration parameters
-requestTemplates = mapTemplateValues(ENDPOINT_CONFIG['methodIntegration']['requestTemplates'])
-
-if ENDPOINT_CONFIG['methodIntegration']['type'] == "Lambda":
-    RESOURCES_FILE_NAME = os.path.join('.', 'resources', DEPLOYMENT_NAME, 'lambda-resources.json')
-    LAMBDAS_DESCRIPTORS = json.load(open(RESOURCES_FILE_NAME))
-
+def deployMethod(ENDPOINT_CONFIG_PARAM):
     try:
-        myLambdaArn = filter(lambda fn: fn["LogicalResourceId"] == ENDPOINT_CONFIG['methodIntegration']['uri'],
-                             LAMBDAS_DESCRIPTORS)[0]["FunctionArn"]
-
-        ENDPOINT_CONFIG['methodIntegration']['credentials'] = RESTAPI_CONFIG['apigRoleArn']
-        ENDPOINT_CONFIG['methodIntegration']['type'] = 'AWS'
-        ENDPOINT_CONFIG['methodIntegration']['httpMethod'] = 'POST'
-        ENDPOINT_CONFIG['methodIntegration']['uri'] = "/".join([
-            "arn:aws:apigateway:eu-west-1:lambda:path", "2015-03-31", "functions",
-            myLambdaArn,
-            "invocations"
-        ])
+        print "--> deleting method", ENDPOINT_CONFIG_PARAM['method']
+        apig.delete_method(
+            restApiId=RESTAPI_CONFIG['id'],
+            resourceId=resource_id,
+            httpMethod=ENDPOINT_CONFIG_PARAM['method']
+        )
 
     except Exception, e:
-        print "Cannot find lambda with LogicalID", ENDPOINT_CONFIG['methodIntegration']['uri']
-        print "Make sure you prepended `Fn` to the uri in the config.json file of your endpoint."
-        print "Please inspect your resources from the AWS CF console."
-        raise e
+        print "----> method did not exist"
 
-
-apig.put_integration(
-    restApiId=RESTAPI_CONFIG['id'],
-    resourceId=resource_id,
-    httpMethod=ENDPOINT_CONFIG['method'],
-    type=ENDPOINT_CONFIG['methodIntegration']['type'],
-    credentials=ENDPOINT_CONFIG['methodIntegration']['credentials'],  # required for AWS integrations
-    integrationHttpMethod=ENDPOINT_CONFIG['methodIntegration']['httpMethod'],
-    uri=ENDPOINT_CONFIG['methodIntegration']['uri'],
-    requestParameters=ENDPOINT_CONFIG['methodIntegration']['requestParameters'],
-    requestTemplates=requestTemplates,
-)
-print "--> put method integration with type =", ENDPOINT_CONFIG['methodIntegration']['type']
-
-
-for integrationResponseKey, integrationResponeConfig in ENDPOINT_CONFIG['methodIntegration']['integrationResponses'].iteritems():
-    responseTemplates = mapTemplateValues(integrationResponeConfig['responseTemplates'])
-    apig.put_integration_response(
+    apig.put_method(
         restApiId=RESTAPI_CONFIG['id'],
         resourceId=resource_id,
-        httpMethod=ENDPOINT_CONFIG['method'],
-        statusCode=integrationResponeConfig['statusCode'],
-        selectionPattern=integrationResponeConfig['selectionPattern'],
-        responseParameters=integrationResponeConfig['responseParameters'],
-        responseTemplates=responseTemplates,
+        httpMethod=ENDPOINT_CONFIG_PARAM['method'],
+        authorizationType='NONE',
+        apiKeyRequired=False,
+        requestParameters=ENDPOINT_CONFIG_PARAM['requestParameters'],
+        requestModels=ENDPOINT_CONFIG_PARAM['requestModels']
     )
-    print "--> put method integration response", integrationResponeConfig['selectionPattern']
+    print "--> put method", ENDPOINT_CONFIG_PARAM['method']
+
+    for methodResponseKey, methodResponseConfig in ENDPOINT_CONFIG_PARAM['methodResponses'].iteritems():
+        apig.put_method_response(
+            restApiId=RESTAPI_CONFIG['id'],
+            resourceId=resource_id,
+            httpMethod=ENDPOINT_CONFIG_PARAM['method'],
+            statusCode=methodResponseConfig['statusCode'],
+            responseParameters=methodResponseConfig['responseParameters'],
+            responseModels=methodResponseConfig['responseModels'],
+        )
+        print "--> put method response", methodResponseConfig['statusCode']
+
+    # prepare put_integration parameters
+    requestTemplates = mapTemplateValues(ENDPOINT_CONFIG_PARAM['methodIntegration']['requestTemplates'])
+
+    if ENDPOINT_CONFIG_PARAM['methodIntegration']['type'] == "Lambda":
+        RESOURCES_FILE_NAME = os.path.join('.', 'resources', DEPLOYMENT_NAME, 'lambda-resources.json')
+        LAMBDAS_DESCRIPTORS = json.load(open(RESOURCES_FILE_NAME))
+
+        try:
+            myLambdaArn = filter(lambda fn: fn["LogicalResourceId"] == ENDPOINT_CONFIG_PARAM['methodIntegration']['uri'],
+                                 LAMBDAS_DESCRIPTORS)[0]["FunctionArn"]
+
+            ENDPOINT_CONFIG_PARAM['methodIntegration']['credentials'] = RESTAPI_CONFIG['apigRoleArn']
+            ENDPOINT_CONFIG_PARAM['methodIntegration']['type'] = 'AWS'
+            ENDPOINT_CONFIG_PARAM['methodIntegration']['httpMethod'] = 'POST'
+            ENDPOINT_CONFIG_PARAM['methodIntegration']['uri'] = "/".join([
+                "arn:aws:apigateway:eu-west-1:lambda:path", "2015-03-31", "functions",
+                myLambdaArn,
+                "invocations"
+            ])
+
+        except Exception, e:
+            print "Cannot find lambda with LogicalID", ENDPOINT_CONFIG_PARAM['methodIntegration']['uri']
+            print "Make sure you prepended `Fn` to the uri in the config.json file of your endpoint."
+            print "Please inspect your resources from the AWS CF console."
+            raise e
+
+    apig.put_integration(
+        restApiId=RESTAPI_CONFIG['id'],
+        resourceId=resource_id,
+        httpMethod=ENDPOINT_CONFIG_PARAM['method'],
+        type=ENDPOINT_CONFIG_PARAM['methodIntegration']['type'],
+        credentials=ENDPOINT_CONFIG_PARAM['methodIntegration']['credentials'],  # required for AWS integrations
+        integrationHttpMethod=ENDPOINT_CONFIG_PARAM['methodIntegration']['httpMethod'],
+        uri=ENDPOINT_CONFIG_PARAM['methodIntegration']['uri'],
+        requestParameters=ENDPOINT_CONFIG_PARAM['methodIntegration']['requestParameters'],
+        requestTemplates=requestTemplates,
+    )
+    print "--> put method integration with type =", ENDPOINT_CONFIG_PARAM['methodIntegration']['type']
+
+    for integrationResponseKey, integrationResponeConfig in ENDPOINT_CONFIG_PARAM['methodIntegration']['integrationResponses'].iteritems():
+        responseTemplates = mapTemplateValues(integrationResponeConfig['responseTemplates'])
+        apig.put_integration_response(
+            restApiId=RESTAPI_CONFIG['id'],
+            resourceId=resource_id,
+            httpMethod=ENDPOINT_CONFIG_PARAM['method'],
+            statusCode=integrationResponeConfig['statusCode'],
+            selectionPattern=integrationResponeConfig['selectionPattern'],
+            responseParameters=integrationResponeConfig['responseParameters'],
+            responseTemplates=responseTemplates,
+        )
+        print "--> put method integration response", integrationResponeConfig['selectionPattern']
+
+deployMethod(ENDPOINT_CONFIG)
+
+if ENDPOINT_CONFIG["_bawsEnableCors"] == True:
+    CORS_CONFIG = deepcopy(ENDPOINT_CONFIG)
+
+    CORS_CONFIG['method'] = 'OPTIONS'
+    CORS_CONFIG['requestParameters'] = {}
+    CORS_CONFIG['requestModels'] = {}
+
+    CORS_CONFIG['methodIntegration']['type'] = 'MOCK'
+    CORS_CONFIG['methodIntegration']['requestParameters'] = {}
+    # CORS_CONFIG['methodIntegration']['credentials']  # InternalFailure
+    CORS_CONFIG['methodIntegration']['httpMethod'] = ''
+    CORS_CONFIG['methodIntegration']['uri'] = ''
+
+    deployMethod(CORS_CONFIG)
 
 
 apig.create_deployment(
