@@ -18,7 +18,7 @@ module.exports = function(grunt) {
             standalone: 'module',
           },
           transform: [
-            'babelify',
+            ['babelify', { "presets": ["es2015"] }],
             'jadeify'
           ]
         },
@@ -35,7 +35,7 @@ module.exports = function(grunt) {
             standalone: 'module',
           },
           transform: [
-            'babelify',
+            ['babelify', { "presets": ["es2015"] }],
             'jadeify'
           ]
         },
