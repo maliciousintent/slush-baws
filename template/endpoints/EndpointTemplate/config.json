@@ -26,11 +26,12 @@
         "statusCode": "200",
         "selectionPattern": ".*",
         "responseParameters": {
-          "method.response.header.Content-Type": "'text/html'",
-          "method.response.header.Cache-Control": "'private, max-age=0, no-cache'"
+          <% if (contentType === 'html') { %>"method.response.header.Content-Type": "'text/html'",
+          "method.response.header.Cache-Control": "'private, max-age=0, no-cache'"<% } %>
         },
         "responseTemplates": {
-          "text/html": "$input.path('$').html"
+          <% if (contentType === 'html') { %>"text/html": "$input.path('$').html"
+          <% } else { %>"application/json": ""<% } %>
         }
       },
       "400": {
@@ -47,8 +48,8 @@
     "200": {
       "statusCode": "200",
       "responseParameters": {
-        "method.response.header.Content-Type": true,
-        "method.response.header.Cache-Control": true
+        <% if (contentType === 'html') { %>"method.response.header.Content-Type": true,
+        "method.response.header.Cache-Control": true<% } %>
       },
       "responseModels": {
         "application/json": "Empty"

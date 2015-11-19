@@ -19,15 +19,27 @@ gulp.task('default', function (done) {
                     validate: function (input) { return input.match(/[a-zA-Z][a-zA-Z0-9]+/) !== null; },
                     default: gulp.args[1],
     },
+    { type: 'list', name: 'contentType',
+                    message: 'Response Content-Type?',
+                    choices: ['html', 'json'],
+                    default: gulp.args[2],
+                    when: function (answers) { return answers.type === 'endpoint' || answers.type === 'lambda'; },
+    },
+    { type: 'list', name: 'lambdaResponseType',
+                    message: 'Jade or plain HTML?',
+                    choices: ['jade', 'plain'],
+                    default: gulp.args[3],
+                    when: function (answers) { return answers.type === 'lambda'; },
+    },
     { type: 'list', name: 'rest_method',
                     message: 'REST HTTP method =>',
                     choices: ['GET', 'PUT', 'POST', 'DELETE', 'PATCH', 'OPTIONS', 'HEAD'],
-                    default: gulp.args[2] || 'GET',
+                    default: gulp.args[4] || 'GET',
                     when: function (answers) { return answers.type === 'endpoint'; },
     },
     { type: 'text', name: 'rest_path',
                     message: 'REST path =>',
-                    default: gulp.args[3] || '/foo',
+                    default: gulp.args[5] || '/foo',
                     when: function (answers) { return answers.type === 'endpoint'; },
     },
     { type: 'confirm', name: 'moveon',
@@ -56,10 +68,16 @@ gulp.task('default', function (done) {
       .pipe(install())
 
     } else if (answers.type === 'lambda') {
-      pipe = pipe.src([
+      var srcDirs = [
         __dirname + '/template/lambdas/LambdaTemplate/**',
         __dirname + '/template/lambdas/LambdaTemplate/.babelrc',
-      ])
+      ];
+
+      if (answers.lambdaResponseType === 'jade') {
+        srcDirs.push(__dirname + '/template/lambdas/LambdaTemplateWithJade/**');
+      }
+
+      pipe = pipe.src(srcDirs)
       .pipe(template(answers, { interpolate: /{{([\s\S]+?)}}/g }))
       .pipe(conflict('./lambdas/' + RESOURCE_NAME))
       .pipe(gulp.dest('./lambdas/' + RESOURCE_NAME)) // relative to cwd

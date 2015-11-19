@@ -3,7 +3,11 @@
 // Lambda Logical Name: {{name}}
 
 var AWS = require('aws-sdk');
+<% if (lambdaResponseType === 'jade') { %>var template = require('./templates/response.jade');<% } %>
 
 module.exports.lambda_handler = function (event, context) {
-  context.done(null, { html: '<h1>It works, hello world from {{name}}!</h1>' });
+  <% if (lambdaResponseType === 'jade') { %>var response = { html: template({ name: '{{name}}' }) };
+  <% } else { %><% if (contentType === 'html') { %>var response = { html: '<h1>It works, hello world from {{name}}!</h1>' };
+  <% } else { %>var response = { welcome: 'to {{name}}' };<% } %><% } %>
+  context.done(null, response);
 }
