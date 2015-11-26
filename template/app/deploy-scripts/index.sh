@@ -3,6 +3,9 @@ set -e
 
 source ./baws.env
 
+# Copy resources descriptors
+cp ./resources/$DEPLOYMENT_NAME/api.json ./resources/api-dump.json || true
+
 
 if [ "$1" == "--help" -o "$1" == "-h" -o "$1" == "help" ]; then
 

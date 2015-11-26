@@ -172,6 +172,21 @@ def json_serial(obj):
     raise TypeError("Type not serializable")
 
 
-RESOURCES_FILE_NAME = os.path.join('.', 'resources', DEPLOYMENT_NAME, 'lambda-resources.json')
-json.dump(resources, open(RESOURCES_FILE_NAME, 'w'), default=json_serial, indent=2, sort_keys=True)
+RESOURCES_FILE_NAME = os.path.join('.', 'resources', 'lambda-resources-dump.json')
+
+try:
+    resources_to_add = json.load(open(RESOURCES_FILE_NAME, 'r'))
+except IOError, e:
+    resources_to_add = []
+except ValueError, e:
+    resources_to_add = []
+
+for item in resources:
+    found = filter(lambda r: r['PhysicalResourceId'] == item['PhysicalResourceId'], resources_to_add)
+    if not found:
+        resources_to_add.append(item)
+
+resources_to_add = sorted(resources_to_add, key=lambda r: (r['StackId'], r['LogicalResourceId'], ))
+
+json.dump(resources_to_add, open(RESOURCES_FILE_NAME, 'w'), default=json_serial, indent=2, sort_keys=True)
 print "Wrote resource descriptors to", RESOURCES_FILE_NAME

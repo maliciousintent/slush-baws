@@ -37,7 +37,7 @@ var sources = {
 
 original._replacePaths.forEach(function (tuple) {
   if (tuple[0] === '_comment') return;
-    
+
   console.error('Replacing', tuple);
 
   var found = jsonpath.apply(original, tuple[0], function (oldValue) {
@@ -67,7 +67,6 @@ process.exit(0);
 EOF
 )
 
-echo $UPDATED_RESOURCES > ./resources/~user-resources.json
 
 echo "Updating/creating stack $STACK_NAME"
 
@@ -76,4 +75,16 @@ aws cloudformation $CMD \
   --template-body "$UPDATED_RESOURCES" \
   --capabilities '["CAPABILITY_IAM"]'
 
-echo "Done, you should wait for cloudformation to complete the update."
+echo -n "Please wait for Cloudformation stack update..."
+
+STACK_STATUS=''
+while [ "$STACK_STATUS" != "UPDATE_COMPLETE" ]; do
+  sleep 10
+  STACK_STATUS=$(aws cloudformation describe-stacks --stack-name $STACK_NAME --output text --query 'Stacks[0].StackStatus')
+  echo -n "."
+done
+
+echo -e "\nOk!"
+
+echo "Dumping resources..."
+aws cloudformation list-stack-resources --stack-name $STACK_NAME > ./resources/user-resources-dump.json
