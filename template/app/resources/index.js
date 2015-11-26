@@ -2,7 +2,7 @@ import { search } from 'jmespath';
 
 import RESOURCES_API from './api-dump.json';
 import RESOURCES_LAMBDA from './lambda-resources-dump.json';
-import RESOURCES_USER from './user-resouces-dump.json';
+import RESOURCES_USER from './user-resources-dump.json';
 
 export default function load(sourceName, jmesPathExpression) {
   let sourceObject;
