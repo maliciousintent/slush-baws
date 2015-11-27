@@ -212,6 +212,13 @@ apig.create_deployment(
 
 print "--> created deployment"
 
-print "All done, api Endpoint is https://{}.execute-api.eu-west-1.amazonaws.com/head{}".format(
+print "All done!"
+print "=> Api Endpoint is https://{}.execute-api.eu-west-1.amazonaws.com/head{}".format(
     RESTAPI_CONFIG['id'],
     ENDPOINT_CONFIG['path'])
+
+print """=> Test this method with:
+$ aws apigateway test-invoke-method --rest-api-id {} \
+--resource-id {} --path-with-query-string {} --http-method {} \
+--body file://{}/test.json
+""".format(RESTAPI_CONFIG['id'], resource_id, ENDPOINT_CONFIG['path'], ENDPOINT_CONFIG['method'], ENDPOINT_DIR)
