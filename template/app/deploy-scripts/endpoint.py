@@ -138,7 +138,7 @@ def deployMethod(ENDPOINT_CONFIG_PARAM):
     requestTemplates = mapTemplateValues(ENDPOINT_CONFIG_PARAM['methodIntegration']['requestTemplates'])
 
     if ENDPOINT_CONFIG_PARAM['methodIntegration']['type'] == "Lambda":
-        RESOURCES_FILE_NAME = os.path.join('.', 'resources', DEPLOYMENT_NAME, 'lambda-resources.json')
+        RESOURCES_FILE_NAME = os.path.join('.', 'resources', 'lambda-resources-dump.json')
         LAMBDAS_DESCRIPTORS = json.load(open(RESOURCES_FILE_NAME))
 
         try:
