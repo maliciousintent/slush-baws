@@ -200,6 +200,21 @@ if ENDPOINT_CONFIG["_bawsEnableCors"] == True:
     CORS_CONFIG['methodIntegration']['requestTemplates'] = {
         "application/json": '{"statusCode": 200}'
     }
+
+    CORS_CONFIG['methodIntegration']['integrationResponses'] = {
+        "default": {
+            "statusCode": "200",
+            "selectionPattern": ".*",
+            "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+                "method.response.header.Access-Control-Allow-Methods": "'POST'"
+            },
+            "responseTemplates": {
+                "application/json": ""
+            }
+        }
+    }
     # CORS_CONFIG['methodIntegration']['credentials']  # InternalFailure
     CORS_CONFIG['methodIntegration']['httpMethod'] = ''
     CORS_CONFIG['methodIntegration']['uri'] = ''
