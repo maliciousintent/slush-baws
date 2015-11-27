@@ -17,9 +17,13 @@ lam = boto3.client('lambda')
 SUPPORT_BUCKET_NAME = os.getenv("SUPPORT_BUCKET_NAME")
 APP_NAME = os.getenv("APP_NAME")
 DEPLOYMENT_NAME = os.getenv("DEPLOYMENT_NAME")
+AWS_CLI_USER_ARN = os.getenv("AWS_CLI_USER_ARN")
 
 if not os.getenv("BAWS_SOURCED"):
     raise Exception("Please source baws.env before running this script.")
+
+if not os.getenv("AWS_CLI_USER_ARN"):
+    raise Exception("Please source baws.env before running this script (missing AWS_CLI_USER_ARN).")
 
 
 if not len(sys.argv) == 2 or not sys.argv[1]:
@@ -79,6 +83,12 @@ CF_TEMPLATE = {
                         "Effect": "Allow",
                         "Principal": {
                             "Service": ["lambda.amazonaws.com"]
+                        },
+                        "Action": ["sts:AssumeRole"]
+                    }, {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "AWS": [AWS_CLI_USER_ARN]
                         },
                         "Action": ["sts:AssumeRole"]
                     }]
