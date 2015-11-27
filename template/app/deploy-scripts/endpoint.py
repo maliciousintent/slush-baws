@@ -197,6 +197,9 @@ if ENDPOINT_CONFIG["_bawsEnableCors"] == True:
 
     CORS_CONFIG['methodIntegration']['type'] = 'MOCK'
     CORS_CONFIG['methodIntegration']['requestParameters'] = {}
+    CORS_CONFIG['methodIntegration']['requestTemplates'] = {
+        "application/json": '{"statusCode": 200}'
+    }
     # CORS_CONFIG['methodIntegration']['credentials']  # InternalFailure
     CORS_CONFIG['methodIntegration']['httpMethod'] = ''
     CORS_CONFIG['methodIntegration']['uri'] = ''
