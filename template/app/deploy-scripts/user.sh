@@ -30,8 +30,8 @@ lodash.merge(original, overrides);
 var jmespath = require('jmespath');
 var jsonpath = require('jsonpath');
 var sources = {
-  api: JSON.parse(fs.readFileSync('./resources/${DEPLOYMENT_NAME}/api.json')),
-  'lambda-resources': JSON.parse(fs.readFileSync('./resources/${DEPLOYMENT_NAME}/lambda-resources.json')),
+  api: JSON.parse(fs.readFileSync('./resources/api-dump.json')),
+  'lambda-resources': JSON.parse(fs.readFileSync('./resources/lambda-resources-dump.json')),
   env: process.env
 };
 
